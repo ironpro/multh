@@ -53,6 +53,10 @@ input[disabled]{
 	border: 1px solid #f6f6f6;
   }
 
+  #stsortable li:hover{
+    cursor: move;
+  }
+
   #stsortable li:nth-child(1) {border-left: 10px solid #E6EE9C;}
   #stsortable li:nth-child(2) {border-left: 10px solid #B6EDD8;}
   #stsortable li:nth-child(3) {border-left: 10px solid #FFCDD3;}
@@ -124,6 +128,10 @@ input[disabled]{
 
   #satrecepientoptionselect{
 	border: 1px solid #f6f6f6;
+  }
+
+  #satsortable li:hover{
+    cursor: move;
   }
 
   #satsortable li:nth-child(1) {border-left: 10px solid #E6EE9C;}

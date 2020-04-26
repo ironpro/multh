@@ -22,7 +22,7 @@ class Icons extends React.Component {
       <>
         <HeaderDefault />
         {/* Page content */}
-        <Container className="mt--9 pb-3 mx-6">
+        <Container className="mt--9 pb-3">
         <Card className="shadow border-0 pb-2 mb-3 bg-dark">
               <CardBody>
                 <Row>

@@ -127,6 +127,8 @@ class Tables extends React.Component {
     var deleteuserid = '';
     var deletefileid = '';
     var deletestatus = '';
+    var unifileid = '';
+    var uniid = '';
     var droptoggle = 0;
     firebase.auth().onAuthStateChanged(function(user) {
 		  if (user) {
@@ -178,7 +180,7 @@ class Tables extends React.Component {
 
                   allcontent +='<tr >';
                 allcontent +='<th><input  type="checkbox"></th>';
-                allcontent +='<td scope="row"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nTo: '+dataval.FromEmail+'</span></td>';
+                allcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nFrom: '+dataval.FromEmail+'</span></td>';
                 allcontent += '<td id="datastatus">' + dataval.RecipientStatus + '</td>';
                 allcontent += '<td id="datakey" hidden>' + data.key + '</td>';
                 allcontent += '<td id="datauid" hidden>' + dataval.From + '</td>';
@@ -202,7 +204,7 @@ class Tables extends React.Component {
                 if(dataval.RecipientStatus == 'Need to Sign'){
                   actionrequiredcontent +='<tr >';
                   actionrequiredcontent +='<th><input  type="checkbox"></th>';
-                  actionrequiredcontent +='<td scope="row"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nTo: '+dataval.FromEmail+'</span></td>';
+                  actionrequiredcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nFrom: '+dataval.FromEmail+'</span></td>';
                   actionrequiredcontent += '<td id="datastatus">' + dataval.RecipientStatus + '</td>';
                   actionrequiredcontent += '<td id="datakey" hidden>' + data.key + '</td>';
                   actionrequiredcontent += '<td id="datauid" hidden>' + dataval.From + '</td>';
@@ -230,7 +232,7 @@ class Tables extends React.Component {
             else if(dataval.RecipientStatus == 'Deleted'){
               deletedcontent +='<tr >';
               deletedcontent +='<th><input  type="checkbox"></th>';
-              deletedcontent +='<td scope="row"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nTo: '+dataval.FromEmail+'</span></td>';
+              deletedcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nFrom: '+dataval.FromEmail+'</span></td>';
               deletedcontent += '<td id=datastatus>' + dataval.RecipientStatus + '</td>';
               deletedcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               deletedcontent += '<td id="datauid" hidden>' + dataval.From + '</td>';
@@ -249,21 +251,19 @@ class Tables extends React.Component {
             else if(dataval.RecipientStatus == 'Completed'){
               completedcontent +='<tr >';
               completedcontent +='<th><input  type="checkbox"></th>';
-              completedcontent +='<td scope="row"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nTo: '+dataval.FromEmail+'</span></td>';
+              completedcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+dataval.DocumentName+ '\nFrom: '+dataval.FromEmail+'</span></td>';
               completedcontent += '<td id="datastatus">' + dataval.RecipientStatus + '</td>';
               completedcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               completedcontent += '<td id="datauid" hidden>' + dataval.From + '</td>';
               completedcontent += '<td id="datarecep" hidden>' + dataval.FromEmail + '</td>';
               completedcontent += '<td >' + dataval.RecipientDateStatus + '</td>';
               completedcontent+=`<td ><div class="btn-group">
-              <button type="button" class="btn btn-primary"><a href="#/admin/sign?id=`+data.key+`&type=db&u=`+dataval.From+`">SIGN</a></button>
+              <button type="button" class="btn btn-primary move">MOVE</button>
               <button type="button" class="btn btn-primary action dropdown-toggle dropdown-toggle-split"></button>
               <div class="dropdown-menu2" id="dropdown">
-              <button class="dropdown-item move" type="button">Move</button>
-              <button class="dropdown-item correct" type="button">Correct</button>
+              <button class="dropdown-item correct" type="button">Forward</button>
               <button class="dropdown-item create" type="button">Create a Copy</button>
               <button class="dropdown-item savetemplate" type="button">Save as Template</button>
-              <button class="dropdown-item void" type="button">Void</button>
               <button class="dropdown-item history" type="button">History</button>
               <button class="dropdown-item export" type="button">Export as CSV</button>
               <button class="dropdown-item deletemanage" type="button">Delete</button>
@@ -319,7 +319,7 @@ class Tables extends React.Component {
             if(val.Status == 'Waiting for Others'){
               waitingcontent +='<tr >';
               waitingcontent +='<th><input  type="checkbox"></th>';
-              waitingcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              waitingcontent +='<td scope="row" class="rowselect" ><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               waitingcontent += '<td id=datastatus>' + val.Status + '</td>';
               waitingcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               waitingcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -343,7 +343,7 @@ class Tables extends React.Component {
 
               sentcontent +='<tr >';
             sentcontent +='<th><input class="primary" type="checkbox"></th>';
-            sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+            sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
             sentcontent += '<td id=datastatus>' + val.Status + '</td>';
             sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
             sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -368,7 +368,7 @@ class Tables extends React.Component {
             else if(val.Status == 'Correcting'){
               sentcontent +='<tr >';
               sentcontent +='<th><input  type="checkbox"></th>';
-              sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               sentcontent += '<td id=datastatus>' + val.Status + '</td>';
               sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -392,7 +392,7 @@ class Tables extends React.Component {
             else if(val.Status == 'Void'){
               sentcontent +='<tr >';
               sentcontent +='<th><input  type="checkbox"></th>';
-              sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               sentcontent += '<td id=datastatus>' + val.Status + '</td>';
               sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -415,7 +415,7 @@ class Tables extends React.Component {
               
               draftcontent +='<tr >';
               draftcontent +='<th><input  type="checkbox"></th>';
-              draftcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              draftcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               draftcontent += '<td id=datastatus>' + val.Status + '</td>';
               draftcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               draftcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -434,7 +434,7 @@ class Tables extends React.Component {
             else if(val.Status == 'Authentication Failed'){
               authcontent +='<tr >';
               authcontent +='<th><input  type="checkbox"></th>';
-              authcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              authcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               authcontent += '<td id=datastatus>' + val.Status + '</td>';
               authcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               authcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -458,7 +458,7 @@ class Tables extends React.Component {
 
               sentcontent +='<tr >';
             sentcontent +='<th><input class="primary" type="checkbox"></th>';
-            sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+            sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
             sentcontent += '<td id=datastatus>' + val.Status + '</td>';
             sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
             sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -483,7 +483,7 @@ class Tables extends React.Component {
             else if(val.Status == 'Expiring Soon'){
               expiringcontent +='<tr >';
               expiringcontent +='<th><input  type="checkbox"></th>';
-              expiringcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              expiringcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               expiringcontent += '<td id=datastatus>' + val.Status + '</td>';
               expiringcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               expiringcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -507,7 +507,7 @@ class Tables extends React.Component {
 
               sentcontent +='<tr >';
             sentcontent +='<th><input class="primary" type="checkbox"></th>';
-            sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+            sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
             sentcontent += '<td id=datastatus>' + val.Status + '</td>';
             sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
             sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -532,7 +532,7 @@ class Tables extends React.Component {
             else if(val.Status == 'Completed'){
               completedcontent +='<tr >';
               completedcontent +='<th><input  type="checkbox"></th>';
-              completedcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              completedcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               completedcontent += '<td id=datastatus>' + val.Status + '</td>';
               completedcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               completedcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -554,7 +554,7 @@ class Tables extends React.Component {
 
               sentcontent +='<tr >';
             sentcontent +='<th><input class="primary" type="checkbox"></th>';
-            sentcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+            sentcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
             sentcontent += '<td id=datastatus>' + val.Status + '</td>';
             sentcontent += '<td id="datakey" hidden>' + data.key + '</td>';
             sentcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -581,7 +581,7 @@ class Tables extends React.Component {
           else if(val.Status == 'Deleted'){
             deletedcontent +='<tr >';
               deletedcontent +='<th><input  type="checkbox"></th>';
-              deletedcontent +='<td scope="row"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
+              deletedcontent +='<td scope="row" class="rowselect"><span className="mb-0 text-sm">'+val.DocumentName+ '\nTo: '+reciverlist+'</span></td>';
               deletedcontent += '<td id=datastatus>' + val.Status + '</td>';
               deletedcontent += '<td id="datakey" hidden>' + data.key + '</td>';
               deletedcontent += '<td id="datarecep" hidden>' + reciverlist + '</td>';
@@ -617,6 +617,154 @@ class Tables extends React.Component {
   }
 
 
+  $(document).on('click','.rowselect', function() { 
+    $('.dropdown-menu2').css({"display": "none"});
+      modal[2].style.display = "block";
+      document.getElementById('managebody').style.display= "none";
+      document.getElementById('detailbody').style.display= "block";
+      console.log($(this).parent().children('#datakey')[0].innerHTML);
+    console.log($(this).parent().children('#datauid')[0].innerHTML);
+    console.log($(this).parent().children('#datastatus')[0].innerHTML);
+    var rowselectuserid = $(this).parent().children('#datauid')[0].innerHTML; 
+    var rowselectfileid = $(this).parent().children('#datakey')[0].innerHTML; 
+    var rowselectstatus = $(this).parent().children('#datastatus')[0].innerHTML;
+    unifileid = rowselectfileid;
+    uniid = rowselectuserid;
+    
+    var ref = firebase.database().ref(rowselectuserid + '/Documents/'+rowselectfileid+'/');  
+			ref.once("value", function(snapshotchild) {
+          var data = snapshotchild.val();
+         
+            var reciverlist = '';
+            try {
+              data.Reciever.forEach(function(reciever, index){
+                var id = index + 1;
+                reciverlist = reciverlist + ' ' +reciever.RecepientEmail + ',';
+
+                var li = document.createElement('li');
+            li.innerHTML=`<div class="rcardmanage">
+            <div class="managelabelspan">
+            <strong><span  id="summary-recepient-name">Recepient Name: `+reciever.RecepientName+`</span></strong>
+            </div>
+            <div class="managelabelspan">
+            <span  id="summary-recepient-name">Recepient Email: `+reciever.RecepientEmail+`</span>
+            </div>
+            <div class="managelabelspan">
+            <span  id="summary-recepient-name">Recepient Status: `+reciever.RecepientOption+`</span>
+            </div>
+            </div>`;
+            $( "#managerecepientstable" ).append(li);
+              
+            });
+            document.getElementById('detailsubject').innerHTML = data.DocumentName;
+            document.getElementById('detailid').innerHTML = rowselectfileid;
+            document.getElementById('detailsent').innerHTML = data.DateSent;
+            document.getElementById('detailcreate').innerHTML = data.DateCreated;
+            document.getElementById('detailholder').innerHTML = data.OwnerEmail;
+            document.getElementById('detailrecepients').innerHTML = reciverlist;
+            document.getElementById('detailstatus').innerHTML = data.Status;
+            document.getElementById('detailstatusdate').innerHTML = data.DateStatus;
+            modal[2].style.display = "none";
+  
+            } catch (error) {
+              modal[2].style.display = "none";
+            }
+        });
+
+ 
+    
+  });
+
+
+  $( "#detailbackbtn" ).click(function() {
+    document.getElementById('managebody').style.display= "block";
+      document.getElementById('detailbody').style.display= "none";
+      $( "#managerecepientstable" ).empty();
+      document.getElementById('detailsubject').innerHTML = '';
+      document.getElementById('detailid').innerHTML = '';
+      document.getElementById('detailsent').innerHTML = '';
+      document.getElementById('detailcreate').innerHTML = '';
+      document.getElementById('detailholder').innerHTML = '';
+      document.getElementById('detailrecepients').innerHTML = '';
+      document.getElementById('detailstatus').innerHTML = '';
+      document.getElementById('detailstatusdate').innerHTML = '';
+  });
+
+  $( "#detaildownloadbtn" ).click(function() {
+    modal[2].style.display = "block"
+    console.log(uniid);
+    console.log(unifileid);
+    var storageRef = firebase.storage().ref();
+		storageRef.child(uniid + '/Documents/'+unifileid+'.pdf').getDownloadURL().then(function(url)     {
+		    // `url` is the download URL for 'images/stars.jpg'
+
+		   // This can be downloaded directly:
+		   var xhr = new XMLHttpRequest();
+		    xhr.responseType = 'blob';
+		    xhr.onload = function(event) {
+        var blob = xhr.response;
+        console.log(blob);
+        var blobUrl = URL.createObjectURL(blob);
+        var link = document.createElement("a"); 
+        link.href = blobUrl;
+        link.style = "display: none";
+        link.download = ""+unifileid+".pdf";
+        link.click();
+        modal[2].style.display = "none"
+		    };
+		    xhr.open('GET', url);
+		    xhr.send();
+
+        console.log(url);
+			
+		     }).catch(function(error) {
+          modal[2].style.display = "none"
+		     // Handle any errors
+    });
+    modal[2].style.display = "none"
+  });
+
+
+  $( "#detailprintbtn" ).click(function() {
+    modal[2].style.display = "block"
+    console.log(uniid);
+    console.log(unifileid);
+    var storageRef = firebase.storage().ref();
+		storageRef.child(uniid + '/Documents/'+unifileid+'.pdf').getDownloadURL().then(function(url)     {
+		    // `url` is the download URL for 'images/stars.jpg'
+
+		   // This can be downloaded directly:
+		   var xhr = new XMLHttpRequest();
+		    xhr.responseType = 'blob';
+		    xhr.onload = function(event) {
+        var blob = xhr.response;
+        
+		    };
+		    xhr.open('GET', url);
+		    xhr.send();
+
+        var iframe = document.createElement('iframe');
+        // iframe.id = 'pdfIframe'
+        iframe.className='pdfIframe'
+        document.body.appendChild(iframe);
+        iframe.style.display = 'none';
+        iframe.onload = function () {
+            setTimeout(function () {
+                iframe.focus();
+                iframe.contentWindow.print();
+                URL.revokeObjectURL(url)
+                // document.body.removeChild(iframe)
+            }, 1);
+        };
+        iframe.src = url;
+        modal[2].style.display = "none"
+			
+		     }).catch(function(error) {
+          modal[2].style.display = "none"
+		     // Handle any errors
+    });
+    modal[2].style.display = "none"
+  });
 
   $(document).on('click','.void', function() { 
     $('.dropdown-menu2').css({"display": "none"});
@@ -772,7 +920,7 @@ class Tables extends React.Component {
 				var data = snapshotchild.val();
           console.log(data);
           var datarray = [];
-          datarray.push({DateCreated: data.DateCreated, DateSent: data.DateSent, DateCreated:data.DateCreated , DateStatus: data.DateStatus, DocumentName: data.DocumentName, Owmer:data.Owner , OwnerEmail: data.OwnerEmail,  Recepients: data.Recepients, Status: data.Status });
+          datarray.push({DateCreated: data.DateCreated, DateSent: data.DateSent, DateCreated:data.DateCreated , DateStatus: data.DateStatus, DocumentName: data.DocumentName, Owmer:data.Owner , OwnerEmail: data.OwnerEmail,  Recepients: recepients, Status: data.Status });
           console.log(datarray);
 
           console.log(CSV(datarray, fileid));
@@ -1116,7 +1264,7 @@ class Tables extends React.Component {
                   <h3 className="mb-0">Manage</h3>
                 </CardHeader>
                 
-                <CardBody className="bg-secondary">
+                <CardBody className="bg-secondary" id="managebody">
                   <Row>
                 <Col lg="3">
                 <div id="managebtncontainer" className="managebtncontainer">
@@ -1451,6 +1599,73 @@ class Tables extends React.Component {
             </Col>
              </Row>
              </CardBody>
+             <CardBody id="detailbody"> 
+                <Row>
+                  <Col lg="12">
+                  <Button color="primary" size="sm" type="button" id="detailbackbtn" > 
+                Back
+              </Button>
+              <Button color="primary" size="sm" type="button" className="float-right" id="detaildownloadbtn" > 
+                Download
+              </Button>
+              <Button color="primary" size="sm" type="button" className="float-right" id="detailprintbtn" > 
+                Print
+              </Button>
+              </Col>
+              <Col lg="12">
+              <h4 className="py-4 px-3" color="dark">Details:</h4>
+              </Col>
+                  <Col lg="6" >
+                <Col lg="12">
+                
+                <FormGroup>
+                  <span className="emaillabelspan"><strong>Subject:</strong></span>
+                  <span className="emaillabelspan" id="detailsubject"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Envelope ID:</strong></span>
+                  <span className="emaillabelspan" id="detailid"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Date Sent:</strong></span>
+                  <span className="emaillabelspan" id="detailsent"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Date Created:</strong></span>
+                  <span className="emaillabelspan" id="detailcreate"></span>
+                  </FormGroup>
+                  </Col>
+                  </Col>
+                  <Col lg="6" >
+                  <Col lg="12">
+                <FormGroup>
+                  <span className="emaillabelspan"><strong>Holder:</strong></span>
+                  <span className="emaillabelspan" id="detailholder"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Envelope Recipients:</strong></span>
+                  <span className="emaillabelspan" id="detailrecepients"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Status:</strong></span>
+                  <span className="emaillabelspan" id="detailstatus"></span>
+                  </FormGroup>
+                  <FormGroup>
+                  <span className="emaillabelspan"><strong>Status Date:</strong></span>
+                  <span className="emaillabelspan" id="detailstatusdate"></span>
+                  </FormGroup>
+                  </Col>
+                    </Col>
+                    <Col lg="12">
+                    <h4 className="py-4 px-3" color="dark">Recepients:</h4>
+                  <div className="managerecepientstable">
+                  <ul id="managerecepientstable">
+                  
+                    </ul> 
+                  </div>
+                  </Col>
+                    </Row>
+                    </CardBody>
                 
               </Card>
             </div>

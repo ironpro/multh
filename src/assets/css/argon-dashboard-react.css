@@ -146,9 +146,18 @@ background-color: #626262;
     
   }
 
+  .custom-control-label{
+    font-size: 12px !important;
+    padding-top: 2px !important;
+  }
+
 
   i.material-icons {
     font-size: 1rem !important;
+  }
+
+  #detailbody{
+    display: none;
   }
 
   .fullwidth{
@@ -196,6 +205,60 @@ background-color: #626262;
   font-size: 12px;
   padding-left: 5px;
 }
+
+.managelabelspan{
+  font-size: 12px;
+  padding-left: 5px;
+  width:32%;
+  text-align: center;
+  display: inline-block;
+}
+
+#managerecepientstable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+  #managerecepientstable li { margin: 1%; padding: 5px; border-radius: 5px; border: 1px solid #f6f6f6; background-color: #ffffff; padding-left: 1.5em; width:98%; }
+
+
+  .rcardmanage{
+	  padding:10px;
+	  background-color: transparent;
+	  border-radius: 5px;
+	  padding-top: 20px;
+	  padding-bottom: 20px;
+	  margin: 5px;
+  }
+
+  .rcardmanage:hover{
+	cursor: default;
+  }
+
+  .rowselect:hover{
+    cursor: pointer;
+    }
+  
+ 
+
+
+  #managerecepientstable li:hover{
+    cursor: default;
+  }
+
+  #managerecepientstable li:nth-child(1) {border-left: 10px solid #E6EE9C;}
+  #managerecepientstable li:nth-child(2) {border-left: 10px solid #B6EDD8;}
+  #managerecepientstable li:nth-child(3) {border-left: 10px solid #FFCDD3;}
+  #managerecepientstable li:nth-child(4) {border-left: 10px solid #90CAF9;}
+  #managerecepientstable li:nth-child(5) {border-left: 10px solid #E1BEE7;}
+  #managerecepientstable li:nth-child(6) {border-left: 10px solid #A5D6A7;}
+  #managerecepientstable li:nth-child(7) {border-left: 10px solid #B3E2E3;}
+  #managerecepientstable li:nth-child(8) {border-left: 10px solid #BCAAA4;}
+  #managerecepientstable li:nth-child(9) {border-left: 10px solid #E0E0E0;}
+  #managerecepientstable li:nth-child(10) {border-left: 10px solid #FFAB00;}
+  #managerecepientstable li:nth-child(11) {border-left: 10px solid #64DD17;}
+  #managerecepientstable li:nth-child(12) {border-left: 10px solid #00B8D4;}
+  #managerecepientstable li:nth-child(13) {border-left: 10px solid #00BFA5;}
+
+
+
+
 
 .reviewrecepientstable{
   overflow: auto;
@@ -319,7 +382,8 @@ hr {
 
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  margin-bottom: 0.3rem; }
+  margin-bottom: 0.3rem;
+  color:#626262 !important; }
 
 p {
   margin-top: 0;

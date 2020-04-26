@@ -3,7 +3,8 @@ var DataVar = {
     DataURI:'',
     DocName:'default',
     RecepientArray:[],
-    OnlySigner: false
+    OnlySigner: false,
+    SignOrder: false
  };
 
 export default DataVar;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-
+import $ from 'jquery';
 // reactstrap components
 import Dropzone from "../components/Dropzone/Dropzone";
 import {
@@ -30,6 +30,10 @@ var firebase = require('firebase');
 
 class Index extends React.Component {
   componentDidMount(){
+    $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
+        console.log(data)
+    })
+
     var modal = document.querySelectorAll(".modal")
 
     var doccount = 0;

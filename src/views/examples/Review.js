@@ -147,7 +147,7 @@ class Review extends React.Component {
 
  
  $( "#reviewnextbtn" ).click(function() {
-  modal[1].style.display = "block"
+  modal[1].style.display = "block";
   var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+userid+''; 
   var today = new Date().toLocaleString().replace(",","");
 
@@ -156,7 +156,69 @@ class Review extends React.Component {
 
 
   var people=[];
-	people = DataVar.RecepientArray;
+  people = DataVar.RecepientArray;
+  if(DataVar.SignOrder === true){
+    var firstRecepientEmail = people[0].email;
+    var firstRecepientName = people[0].name;
+    var ref = firebase.database().ref('Users/');
+                ref.orderByChild('UserEmail').equalTo(people[0].email).on("value", function(snapshotchild) {
+            console.log(snapshotchild);
+            snapshotchild.forEach(function(datarecep){
+            var data = datarecep.val();
+            console.log(data);
+            var useridData = data.UserID;
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentName').set(docname);
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentID').set(filename);
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('From').set(userid);
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('FromEmail').set(email);
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('RecipientDateStatus').set(today);
+            firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('RecipientStatus').set('Need to Sign');
+            });
+            
+          });
+    Email.send({
+      Host : "mail.pappaya.com",
+      Username : "devsign@pappaya.com",
+      Password : "Pappaya@2020",
+      To : firstRecepientEmail,
+      From : "devsign@pappaya.com",
+      Subject : "PappayaSign: "+subject+"",
+      Body : '<div><p>Hello '+firstRecepientName+', We have a sign request for you.\nGo to this link:'+url+'</p><a target="_blank" href="'+url+'"><p>Click Here</p></a>\n\n<p>Personal Message: '+emailmessage+'</p></div>'
+    }).then(
+      message => {
+        
+      }
+    );
+    people.forEach(function(item, index) {
+      var recepientName = people[index].name;
+      var recepientEmail = people[index].email;
+      var firstRecepientEmail = people[0].email;
+      var recepientOption = people[index].option;
+      var recepientColor = colorArray[index];
+      if(recepientOption == 'Needs to Sign' || recepientOption == 'Needs to View'){
+      console.log(recepientEmail + ',' + recepientName);
+  
+         
+          
+          
+            firebase.database().ref(userid + '/Documents/'+filename+'/').child('Status').set('Waiting for Others');
+            firebase.database().ref(userid + '/Documents/'+filename+'/').child('SignOrder').set(true);
+            firebase.database().ref(userid + '/Documents/'+filename+'/').child('DateSent').set(today);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientName').set(recepientName);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('DocumentName').set(docname);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientEmail').set(recepientEmail);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientColor').set(recepientColor);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientOption').set(recepientOption);
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientStatus').set('Sent');
+            firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientDateStatus').set(today);
+          
+          
+          }
+    });
+    modal[1].style.display = "none"
+    window.location.hash = "#/admin/sendsuccess";
+  }
+  else{
 	people.forEach(function(item, index) {
 		var recepientName = people[index].name;
 		var recepientEmail = people[index].email;
@@ -198,6 +260,7 @@ class Review extends React.Component {
         
           firebase.database().ref(userid + '/Documents/'+filename+'/').child('Status').set('Waiting for Others');
           firebase.database().ref(userid + '/Documents/'+filename+'/').child('DateSent').set(today);
+          firebase.database().ref(userid + '/Documents/'+filename+'/').child('SignOrder').set(false);
           firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientName').set(recepientName);
           firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('DocumentName').set(docname);
           firebase.database().ref(userid + '/Documents/'+filename+'/Reciever/'+index).child('RecepientEmail').set(recepientEmail);
@@ -210,7 +273,8 @@ class Review extends React.Component {
 				}
   });
   modal[1].style.display = "none"
-  window.location.hash = "#/admin/sendsuccess";   
+  window.location.hash = "#/admin/sendsuccess";
+  }   
   
   
 });

@@ -136,17 +136,38 @@ class Recepients extends React.Component {
 					
 				});
 			if(wurl === ''){
-				console.log(people);
-				DataVar.RecepientArray = people;
-				console.log(DataVar);
-				var url = "#/admin/sign";
-    			window.location.hash = url;
+				if (document.getElementById('signordercheck').checked) {
+					DataVar.SignOrder = true;
+					console.log(people);
+					DataVar.RecepientArray = people;
+					console.log(DataVar);
+					var url = "#/admin/sign";
+					window.location.hash = url;
+				} else {
+					DataVar.SignOrder = false;
+					console.log(people);
+					DataVar.RecepientArray = people;
+					console.log(DataVar);
+					var url = "#/admin/sign";
+					window.location.hash = url;	
+				}
+				
 			}
 			else{
-				console.log(people);
-				DataVar.RecepientArray = people;
-				console.log(DataVar);
-    			window.location.hash = wurl;	
+				if (document.getElementById('signordercheck').checked) {
+					DataVar.SignOrder = true;
+					console.log(people);
+					DataVar.RecepientArray = people;
+					console.log(DataVar);
+					window.location.hash = wurl;
+				} else {
+					DataVar.SignOrder = false;
+					console.log(people);
+					DataVar.RecepientArray = people;
+					console.log(DataVar);
+					window.location.hash = wurl;
+				}
+					
 			}
 				
 			}
@@ -225,6 +246,16 @@ class Recepients extends React.Component {
 		</Col>
 		
 		<Col lg="12">
+		<div id="signordercheckdiv" className="custom-control custom-checkbox float-left mx-2 my-1">
+		<input
+		className="custom-control-input"
+		id="signordercheck"
+		type="checkbox"
+		/>
+		<label className="custom-control-label" htmlFor="signordercheck">
+		Set signing order
+		</label>
+		</div>
 		<Button id="s-btn" className="close-btn float-right m-2 px-5" > Next</Button>
 		<Button id="append-btn" className="close-btn float-right m-2 px-5" > Add</Button>
 		

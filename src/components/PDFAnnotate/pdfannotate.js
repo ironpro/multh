@@ -65,8 +65,10 @@ var recepientcolor = '';
 var useridother = '';
 var owner = '';
 var grabbedcolor = '';
+var recepientrgbval = '';
 var docname = '';
 var action = '';
+var signorderval = false;
 var dbpeople = [];
 modal[0].style.display = "block";
 
@@ -209,65 +211,70 @@ var PDFAnnotate = function(container_id, toolbar_id, url, filename, options = {}
 
 			
 			fabricObj.on({"mouse:up": function(e) {
-				//console.log("Mouse up", e);
+				console.log("Mouse up", e);
 				//fabricMouseHandler(e, fabricObj);
-				if (e.target) {
-					//clicked on object
-					const objcolor = e.target.backgroundColor;
-					const objid = e.target.id;
-					if(grabbedcolor != ''){
-						function hexToRgb(hex) {
-							var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-							return result ? {
-							  r: parseInt(result[1], 16),
-							  g: parseInt(result[2], 16),
-							  b: parseInt(result[3], 16)
-							} : null;
-						  }
-						  
+				try {
+					if (e.target) {
+						//clicked on object
+						const objcolor = e.target.backgroundColor;
+						const objid = e.target.id;
+						if(grabbedcolor != ''){
+							function hexToRgb(hex) {
+								var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+								return result ? {
+								  r: parseInt(result[1], 16),
+								  g: parseInt(result[2], 16),
+								  b: parseInt(result[3], 16)
+								} : null;
+							  }
+							  
+							
+							
+							console.log(e.target);
+							
+							var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
+							var RGB = 'rgb('+rgbval+')';
+						}
+						else{
+							var RGB = '';
+						}
 						
+						if(objcolor == RGB || owner == 'admin' || objid == email){
+							console.log('Object selected');
+							e.target.lockMovementX = false; e.target.lockMovementY = false;
+							var id = fabricObj.getObjects().indexOf(e.target);
+							e.target.selectable = true;
+							fabricObj.setActiveObject(fabricObj.item(id));
+							fabricObj.requestRenderAll();
+							e.target.hasControls = true;
+							e.target.set("id", email);
+						}
+						else{
+							console.log('Object not selected');
+							e.target.selectable = false;
+							e.target.lockMovementX = true; e.target.lockMovementY = true;
+							e.target.hasControls = false;
+						}
+					  }else{
+						//add rectangle
+						if(e.e.type == 'touchstart' || e.e.type == 'touchmove' || e.e.type == 'touchend' || e.e.type == 'touchcancel'){
 						
-						console.log(e.target);
-						
-						var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
-						var RGB = 'rgb('+rgbval+')';
-					}
-					else{
-						var RGB = '';
-					}
+							var x = e.pointer.x;
+							var y = e.pointer.y;
+							inst.active_canvas = index;
+							fabricMouseHandler(e, fabricObj);
+						} else if (e.e.type == 'mousedown' || e.e.type == 'mouseup' || e.e.type == 'mousemove' || e.e.type == 'mouseover'|| e.e.type=='mouseout' || e.e.type=='mouseenter' || e.e.type=='mouseleave') {
+							var x = e.e.clientX;
+							var y = e.e.clientY;
+							var click = e.e;
+							inst.active_canvas = index;
+						inst.fabricClickHandler(click, fabricObj);
+						}
+					  }
+				} catch (error) {
 					
-					if(objcolor == RGB || owner == 'admin' || objid == email){
-						console.log('Object selected');
-						e.target.lockMovementX = false; e.target.lockMovementY = false;
-						var id = fabricObj.getObjects().indexOf(e.target);
-						e.target.selectable = true;
-						fabricObj.setActiveObject(fabricObj.item(id));
-						fabricObj.requestRenderAll();
-						e.target.hasControls = true;
-						e.target.set("id", email);
-					}
-					else{
-						console.log('Object not selected');
-						e.target.selectable = false;
-						e.target.lockMovementX = true; e.target.lockMovementY = true;
-						e.target.hasControls = false;
-					}
-				  }else{
-					//add rectangle
-					if(e.e.type == 'touchstart' || e.e.type == 'touchmove' || e.e.type == 'touchend' || e.e.type == 'touchcancel'){
-					
-						var x = e.pointer.x;
-						var y = e.pointer.y;
-						inst.active_canvas = index;
-						fabricMouseHandler(e, fabricObj);
-					} else if (e.e.type == 'mousedown' || e.e.type == 'mouseup' || e.e.type == 'mousemove' || e.e.type == 'mouseover'|| e.e.type=='mouseout' || e.e.type=='mouseenter' || e.e.type=='mouseleave') {
-						var x = e.e.clientX;
-						var y = e.e.clientY;
-						var click = e.e;
-						inst.active_canvas = index;
-					inst.fabricClickHandler(click, fabricObj);
-					}
-				  }
+				}
+				
 				
 				
 			  }});
@@ -519,6 +526,7 @@ var PDFAnnotate = function(container_id, toolbar_id, url, filename, options = {}
 
 
 PDFAnnotate.prototype.AddObj = function () {
+
 try {
 if(type == 'home'){
 	modal[0].style.display = "none";
@@ -544,6 +552,16 @@ else{
 						console.log('data found');
 					  fabricObj.loadFromJSON(childData, function () {
 						fabricObj.renderAll();
+						fabricObj.trigger("mouse:up", {
+							pageX: 700,
+							pageY: 400
+						});
+						fabricObj.getObjects().forEach(function (targ) {
+							console.log(targ);
+							targ.selectable = false;
+							targ.hasControls = false;
+														
+						});
 						modal[0].style.display = "none";
 					})
 				});
@@ -692,6 +710,41 @@ PDFAnnotate.prototype.savePdf = function () {
 	modal[1].style.display = "none";
 }
 
+PDFAnnotate.prototype.checkallupdated = function () {
+	
+	var inst = this;
+	var count = 0;
+	if(useridother==""){
+		pdf.savetoCloudPdf();
+	}
+	else if(userid==useridother){
+		pdf.savetoCloudPdf();
+	}
+	else if(userid!=useridother){
+	$.each(inst.fabricObjects, function (index, fabricObj) {
+	    fabricObj.getObjects().forEach(function (targ) {
+			console.log(targ);
+			targ.selectable = false;
+			targ.hasControls = false;
+			if (targ.backgroundColor === recepientrgbval){
+					count = count + 1;
+					console.log(count);
+			}
+			
+		});
+	});
+	if(count === 0){
+		pdf.savetoCloudPdf();
+	}
+	else{
+		alert('Please add all details to continue');
+		modal[1].style.display = "none";
+	}
+	
+	}
+
+}
+
 
 
 
@@ -706,6 +759,7 @@ PDFAnnotate.prototype.savetoCloudPdf = function () {
 	if(action === '' || action === 'correct' || typeof action === 'undefined'){
 
 	if(useridother==""){
+		
 
 	console.log('fileid:'+fileid);
     if (fileid ===''){
@@ -791,17 +845,66 @@ PDFAnnotate.prototype.savetoCloudPdf = function () {
 		})
 		firebase.database().ref(useridother + '/Documents/'+filename).child('Owner').set(useridother);
 		firebase.database().ref(useridother + '/Documents/'+filename).child('DateStatus').set(today);
+		var recepientkey = '';
 		firebase.database().ref('Users/'+userid+'/Requests/'+filename).child('RecipientStatus').set('Completed');
 		var ref = firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/');
               ref.orderByChild('RecepientEmail').equalTo(email).on("value", function(snapshotchild) {
 				  console.log(snapshotchild);
 				  snapshotchild.forEach(function(datarecep){
 					  var data = datarecep.val();
+					  recepientkey = datarecep.key;
 					  console.log(datarecep.key);
 					firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/'+datarecep.key + '/').child('RecepientStatus').set('Completed');
 					firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/'+datarecep.key + '/').child('RecepientDateStatus').set(today);
+					
 				  });
 				});
+
+				if(signorderval === true){
+					try {
+						var nextuser = parseInt(recepientkey) + 1;
+						var nextuserref = firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/'+nextuser+'/');
+						nextuserref.on("value", function(nextusersnapshot) {
+							var nextuserdata = nextusersnapshot.val();
+							var nextuseremail = nextuserdata.RecepientEmail;
+							var nextusername =  nextuserdata.RecepientName;
+							var getnextuserrequetsref = firebase.database().ref('Users/');
+							getnextuserrequetsref.orderByChild('UserEmail').equalTo(nextuseremail).on("value", function(snapshotchild) {
+								console.log(snapshotchild);
+								snapshotchild.forEach(function(datareceprequest){
+								var requestdata = datareceprequest.val();
+								console.log(requestdata);
+								var useridData = requestdata.UserID;
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentName').set(docname);
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentID').set(filename);
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('From').set(useridother);
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('FromEmail').set(email);
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('RecipientDateStatus').set(today);
+								firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('RecipientStatus').set('Need to Sign');
+								});
+								
+							});
+							Email.send({
+								Host : "mail.pappaya.com",
+								Username : "devsign@pappaya.com",
+								Password : "Pappaya@2020",
+								To : nextuseremail,
+								From : "devsign@pappaya.com",
+								Subject : "PappayaSign: Sign Request",
+								Body : '<div><p>Hello '+nextusername+', We have a sign request for you.\nGo to this link:'+url+'</p><a target="_blank" href="'+url+'"><p>Click Here</p></a>\n\n<p></p></div>'
+		
+							}).then(
+							  message => {
+								  
+								}
+							);
+
+					});
+					} catch (error) {
+						
+					}
+					
+				}
 		
 				var indexref = firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/');
 				indexref.orderByChild('RecepientStatus').equalTo('Completed').on("value", function(snapshotchild) {
@@ -826,6 +929,7 @@ PDFAnnotate.prototype.savetoCloudPdf = function () {
 					});
 					var dataURI = doc.output('datauristring');
 					console.log(dataURI);
+					
 					
 					dbpeople.forEach(function(item, index) {
 						var recepientName = dbpeople[index].name;
@@ -1518,6 +1622,7 @@ try{
 		}
 		
 		document.getElementById('recieverfinishbtn').style.display = 'none';
+		document.getElementById('recieverfinishlaterbtn').style.display = 'none';
 		document.getElementById('recieverdeclinebtn').style.display = 'none';
 		try {
 			if(DataVar.DataPath != ''){
@@ -1577,6 +1682,17 @@ try{
 		  grabbedcolor = val.RecepientColor;
 		  remail = val.RecepientEmail;
 		  console.log(grabbedcolor);
+		  function hexToRgb(hex) {
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+			  r: parseInt(result[1], 16),
+			  g: parseInt(result[2], 16),
+			  b: parseInt(result[3], 16)
+			} : null;
+		  }
+		
+		var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
+		recepientrgbval = 'rgb('+rgbval+')';
 			});
 			ref.on("value", function(snapshotchild) {
 				snapshotchild.forEach(function(childdata){
@@ -1593,14 +1709,20 @@ try{
 
 	  
 	  
-	  var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/Status');
+	  var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/');
 	  checkref.once("value", function(snapshot) {
 			var data = snapshot.val();
-			console.log(data); 
-			if(data === 'Void' || data === 'Deleted' || data === 'Correcting'){
+			try {
+				console.log(data); 
+			signorderval = data.SignOrder;
+			if(data.Status === 'Void' || data.Status === 'Deleted' || data.Status === 'Correcting'){
 				modal[0].style.display = "none";
 				window.location.hash='#/admin/index';
 			}
+			} catch (error) {
+				
+			}
+			
         //$('#load').fadeOut('slow');
 	  });
 		  
@@ -1628,6 +1750,7 @@ try{
 		try {
 			action = 'create';
 			document.getElementById('recieverfinishbtn').style.display = 'none';
+			document.getElementById('recieverfinishlaterbtn').style.display = 'none';
 			document.getElementById('recieverdeclinebtn').style.display = 'none';
 			document.getElementById('openfilebtn').style.display = 'none';
 			document.getElementById('textbtn').style.display = 'block';
@@ -1664,17 +1787,24 @@ try{
 		}
 		else{
 			document.getElementById('recieverfinishbtn').style.display = 'none';
+			document.getElementById('recieverfinishlaterbtn').style.display = 'none';
 			document.getElementById('recieverdeclinebtn').style.display = 'none';
 			owner = 'admin';
 
-			var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/Status');
+			var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/');
 				checkref.once("value", function(snapshot) {
 						var data = snapshot.val();
+						try {
+							signorderval = data.SignOrder;
 						console.log(data);
-						if(data === 'Void' ){
+						if(data.Status === 'Void' ){
 							modal[0].style.display = "none";
 							window.location.hash='#/admin/index';
 						}
+						} catch (error) {
+							
+						}
+						
 					//$('#load').fadeOut('slow');
 				});
 
@@ -1847,6 +1977,7 @@ try{
 		}
 		
 		document.getElementById('recieverfinishbtn').style.display = 'none';
+		document.getElementById('recieverfinishlaterbtn').style.display = 'none';
 		document.getElementById('recieverdeclinebtn').style.display = 'none';
 		try {
 			if(DataVar.DataPath != ''){
@@ -1902,6 +2033,17 @@ try{
 		  grabbedcolor = val.RecepientColor;
 		  remail = val.RecepientEmail;
 		  console.log(grabbedcolor);
+		  function hexToRgb(hex) {
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+			  r: parseInt(result[1], 16),
+			  g: parseInt(result[2], 16),
+			  b: parseInt(result[3], 16)
+			} : null;
+		  }
+		
+		var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
+		recepientrgbval = 'rgb('+rgbval+')';
 			});
 			ref.once("value", function(snapshotchild) {
 				snapshotchild.forEach(function(childdata){
@@ -1918,13 +2060,19 @@ try{
 
 	  
 	  
-	  var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/Status');
+	  var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/');
 	  checkref.once("value", function(snapshot) {
 			var data = snapshot.val();
 			console.log(data);
-			if(data === 'Void' || data === 'Deleted' || data === 'Correcting'){
+			try {
+				signorderval = data.SignOrder;
+			console.log(data);
+			if(data.Status === 'Void' ){
 				modal[0].style.display = "none";
 				window.location.hash='#/admin/index';
+			}
+			} catch (error) {
+				
 			}
         //$('#load').fadeOut('slow');
 	  });
@@ -1937,20 +2085,27 @@ try{
 		else{
 			try {
 				document.getElementById('recieverfinishbtn').style.display = 'none';
+				document.getElementById('recieverfinishlaterbtn').style.display = 'none';
 			document.getElementById('recieverdeclinebtn').style.display = 'none';
 			} catch (error) {
 				
 			}
 			
 			owner = 'admin';
-			var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/Status');
+			var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/');
 			checkref.once("value", function(snapshot) {
 					var data = snapshot.val();
 					console.log(data);
-					if(data === 'Void' ){
+					try {
+						signorderval = data.SignOrder;
+						if(data.Status === 'Void' ){
 						modal[0].style.display = "none";
 						window.location.hash='#/admin/index';
+					}	
+					} catch (error) {
+						
 					}
+					
 				//$('#load').fadeOut('slow');
 			});
 		}
@@ -2023,8 +2178,16 @@ window.onclick = function(e){
   recieverfinishbtn.addEventListener('click', function(event) {
 
 		modal[1].style.display = "block";
-		pdf.savetoCloudPdf();
+		pdf.checkallupdated();
 		
+
+});
+
+var recieverfinishlaterbtn = document.getElementById('recieverfinishlaterbtn');
+recieverfinishlaterbtn.addEventListener('click', function(event) {
+
+	window.location.hash = "#/admin/manage";
+	  
 
 });
 
@@ -3004,6 +3167,7 @@ render() {
 	 <Col lg="12">
 	<Button id="getlinkbtn" className="m-2 float-right px-4" color="primary" type="button">Save</Button>
 	<Button id="recieverfinishbtn" color="primary" type="button" className="m-2 px-4 float-left">Finish and Approve</Button>
+	<Button id="recieverfinishlaterbtn" color="dark" type="button" className="m-2 px-4 float-left">Finish Later</Button>
 	<Button id="recieverdeclinebtn" color="neutral" type="button" className="m-2 px-4 float-left">Decline</Button>
 	<div lg="6" id="emailbtncontainer">
 	 <Button id="sendemailbtn" className="m-2 float-left px-4" color="primary" type="button">Next</Button>

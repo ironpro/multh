@@ -201,7 +201,7 @@ var reader = new FileReader();
           ref={this.fileInputRef}
           className="FileInput"
           type="file"
-          multiple
+          accept="application/pdf"
           onChange={this.onFilesAdded}
         />
         <img
