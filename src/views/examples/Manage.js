@@ -1606,7 +1606,7 @@ class Tables extends React.Component {
              <CardBody id="detailbody"> 
                 <Row>
                   <Col lg="12">
-                  <Button color="primary" size="sm" type="button" id="detailbackbtn" > 
+                  <Button color="primary" size="sm" type="button" className="px-4" id="detailbackbtn" > 
                 Back
               </Button>
               <Button color="primary" size="sm" type="button" className="float-right" id="detaildownloadbtn" > 

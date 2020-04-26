@@ -14,16 +14,34 @@ import {
 } from "reactstrap";
 // core components
 import HeaderDefault from "components/Headers/HeaderDefault.js";
+var firebase = require('firebase');
 
 class Icons extends React.Component {
-  state = {};
+  componentDidMount(){
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // user exists, do stuff
+        var userid = user.uid;
+      console.log('user logged in');
+      console.log(userid);
+
+      
+      
+      } else {
+        document.getElementById('headerstepwizard').style.display = 'none';
+        // no user
+        //window.location.hash = "#/auth/login";
+      
+      }
+      });
+  }
   render() {
     return (
       <>
         <HeaderDefault />
         {/* Page content */}
         <Container className="mt--9 pb-3">
-        <Card className="shadow border-0 pb-2 mb-3 bg-dark">
+        <Card className="shadow border-0 pb-2 mb-3 bg-dark" id="headerstepwizard">
               <CardBody>
                 <Row>
               <Col lg="12" className="form-check form-check-inline">

@@ -236,7 +236,13 @@ background-color: #626262;
     }
   
  
+  #detaildownloadbtn{
+    display:none;
+  }
 
+  #detailprintbtn{
+    display:none;
+  }
 
   #managerecepientstable li:hover{
     cursor: default;

@@ -77,8 +77,9 @@ class AdminNavbar extends React.Component {
 
       }
       else{
-        
+        document.getElementById('navbaradminmain').style.display = 'none';
         //window.location.hash = "#/auth/login";
+
         
       }
     });
@@ -90,6 +91,7 @@ class AdminNavbar extends React.Component {
       <Navbar
         className="navbar-top navbar-horizontal navbar-dark"
         expand="md"
+        id="navbaradminmain"
       >
         <Container className="px-4" fluid>
             <img alt="..." style={{ maxWidth: "170px" }} src="./pappayasign_white.png" />
