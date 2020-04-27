@@ -78,6 +78,8 @@ class AdminNavbar extends React.Component {
       }
       else{
         document.getElementById('navbaradminmain').style.display = 'none';
+        document.getElementById('navbaradminmainprofile').style.display = 'none';
+        document.getElementById('navbaradminmainprofilespan').style.display = 'none';
         //window.location.hash = "#/auth/login";
 
         
@@ -91,7 +93,7 @@ class AdminNavbar extends React.Component {
       <Navbar
         className="navbar-top navbar-horizontal navbar-dark"
         expand="md"
-        id="navbaradminmain"
+        
       >
         <Container className="px-4" fluid>
             <img alt="..." style={{ maxWidth: "170px" }} src="./pappayasign_white.png" />
@@ -120,7 +122,7 @@ class AdminNavbar extends React.Component {
                 </Col>
               </Row>
             </div>
-            <Nav className="ml-auto mr-auto" fluid="true" navbar>
+            <Nav className="ml-auto mr-auto" fluid="true" navbar id="navbaradminmain">
               <NavItem>
                 <NavLink id="homebtn" className="nav-link-icon navtop " activeClassName="active"  to="/admin/index" tag={Link}>
                 <span className="btn-inner--icon">
@@ -146,11 +148,11 @@ class AdminNavbar extends React.Component {
                 </NavLink>
               </NavItem>
             </Nav>
-            <Nav className="align-items-center d-none d-md-flex" navbar>
+            <Nav className="align-items-center d-none d-md-flex" navbar  id="navbaradminmainprofile"> 
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
-                  <span className="avatar avatar-sm rounded-circle">
+                  <span className="avatar avatar-sm rounded-circle" id="navbaradminmainprofilespan">
                     <img
                       alt="..."
                       id="navbarprofilpic"

@@ -159,7 +159,6 @@ class SelectTemplateRecepients extends React.Component {
 		$( "#sts-btn" ).click(function() {
 			modal[0].style.display = "block";
 			var today = new Date().toLocaleString().replace(",","");
-			url = 'https://pappayasign.surge.sh/#/admin/sign?id=' + encodeURIComponent(docid) + '&type=db&u=' + userid;
 			people = [];
 			var listItems = $("#stsortable li");
 			if(listItems.length == 0){
@@ -259,6 +258,7 @@ class SelectTemplateRecepients extends React.Component {
 								var data = datarecep.val();
 								console.log(data);
 								var useridData = data.UserID;
+								var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+encodeURIComponent(docid)+'&type=db&u='+userid+'&key='+data.key+''; 
 								firebase.database().ref('Users/'+useridData+'/Requests/'+docid).child('DocumentName').set(docname);
 								firebase.database().ref('Users/'+useridData+'/Requests/'+docid).child('DocumentID').set(docid);
 								firebase.database().ref('Users/'+useridData+'/Requests/'+docid).child('From').set(userid);

@@ -1138,11 +1138,12 @@ class Tables extends React.Component {
     var status = $(this).parent().parent().parent().children('#datastatus')[0].innerHTML;
     }
     
-    var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+fileid+'&type=db&u='+resenduserid+''; 
+    //var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+fileid+'&type=db&u='+resenduserid+''; 
     var ref = firebase.database().ref(resenduserid + '/Documents/'+fileid+'/Reciever/');  
 			ref.once("value", function(snapshotchild) {
 				snapshotchild.forEach(function(childdata){
           var data = childdata.val();
+          var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+fileid+'&type=db&u='+resenduserid+'&key='+data.key+''; 
           console.log(data.RecepientStatus);
           if(data.RecepientStatus === 'Sent'){
             var dbpeople = [];

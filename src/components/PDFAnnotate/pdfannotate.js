@@ -70,6 +70,7 @@ var docname = '';
 var action = '';
 var signorderval = false;
 var dbpeople = [];
+var key = '';
 modal[0].style.display = "block";
 
 var Email = {
@@ -871,7 +872,7 @@ PDFAnnotate.prototype.savetoCloudPdf = function () {
 						}
 						else if(currentuser < totalcount){
 							try {
-								var nextuserurl = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+useridother+'';
+								var nextuserurl = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+useridother+'&key='+nextuser+'';
 							var nextuserref = firebase.database().ref(useridother + '/Documents/'+filename+'/Reciever/'+nextuser+'/');
 						nextuserref.on("value", function(nextusersnapshot) {
 							var nextuserdata = nextusersnapshot.val();
@@ -1633,8 +1634,7 @@ try{
 		}
 		
 		document.getElementById('recieverfinishbtn').style.display = 'none';
-		document.getElementById('recieverfinishlaterbtn').style.display = 'none';
-		document.getElementById('recieverdeclinebtn').style.display = 'none';
+		document.getElementById('moreoptions').style.display = 'none';
 		try {
 			if(DataVar.DataPath != ''){
 				console.log(DataVar.DataPath);
@@ -1798,8 +1798,7 @@ try{
 		}
 		else{
 			document.getElementById('recieverfinishbtn').style.display = 'none';
-			document.getElementById('recieverfinishlaterbtn').style.display = 'none';
-			document.getElementById('recieverdeclinebtn').style.display = 'none';
+			document.getElementById('moreoptions').style.display = 'none';
 			owner = 'admin';
 
 			var checkref = firebase.database().ref(useridother + '/Documents/'+fileid +'/');
@@ -1907,6 +1906,7 @@ try{
 		//window.location.hash = "#/auth/login";
 		modal[0].style.display = "none";
 		modal[4].style.display = "block";
+		document.getElementById('getlinkbtn').style.display = 'none';
 
 	}
 	});
@@ -1921,22 +1921,13 @@ try{
 	}
 
 
-	var nextnouserbtn = document.getElementById('nextnouserbtn');
-	nextnouserbtn.addEventListener('click', function(event) {
-		var NoUserName = document.getElementById('nouser_name').value;
-	var NoUserEmail = document.getElementById('nouser_email').value;
-	if(NoUserName === '' || NoUserEmail === ''){
-		alert('Enter Details to Continue');
-	}
-	else{
+	var startnouserbtn = document.getElementById('startnouserbtn');
+	startnouserbtn.addEventListener('click', function(event) {
+	if (document.getElementById('signtermscheck').checked) {
 		modal[4].style.display = "none";
 		modal[0].style.display = "block";
 
-
-              
-			  email = NoUserEmail;
-			  userid = 'none';
-			  console.log('Emailset:'+email);
+		userid = 'none';
 			  
 			  var optiondefault = document.createElement('option');
 			  optiondefault.value = email;
@@ -1960,6 +1951,8 @@ try{
 	 console.log(userid);
 	 console.log(useridother);
 	 fileid = data.id;
+	 key = data.key;
+	 console.log('key:'+key);
 	} catch (error) {
 		
 	}
@@ -1988,8 +1981,7 @@ try{
 		}
 		
 		document.getElementById('recieverfinishbtn').style.display = 'none';
-		document.getElementById('recieverfinishlaterbtn').style.display = 'none';
-		document.getElementById('recieverdeclinebtn').style.display = 'none';
+		document.getElementById('moreoptions').style.display = 'none';
 		try {
 			if(DataVar.DataPath != ''){
 				console.log(DataVar.DataPath);
@@ -2033,41 +2025,43 @@ try{
 			document.getElementById('fieldscolumn').style.display = 'none';
 			document.getElementById('recepientscolumn').style.display = 'none';
 
-			var remail = '';
-			console.log('remail:'+remail)
-			var ref = firebase.database().ref(useridother + '/Documents/'+fileid+'/Reciever/');
-        ref.orderByChild('RecepientEmail').equalTo(email).on("value", function(snapshot) {
-          if(snapshot.exists()){
-            snapshot.forEach(function(data){
-          var val = data.val();
-		  console.log(val);
-		  grabbedcolor = val.RecepientColor;
-		  remail = val.RecepientEmail;
-		  console.log(grabbedcolor);
-		  function hexToRgb(hex) {
-			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-			return result ? {
-			  r: parseInt(result[1], 16),
-			  g: parseInt(result[2], 16),
-			  b: parseInt(result[3], 16)
-			} : null;
-		  }
-		
-		var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
-		recepientrgbval = 'rgb('+rgbval+')';
-			});
-			ref.once("value", function(snapshotchild) {
-				snapshotchild.forEach(function(childdata){
-					var data = childdata.val();
-					dbpeople.push({name: data.RecepientName, email: data.RecepientEmail, option:data.RecepientOption});
-					console.log(dbpeople);
-				});
-			});
-            
-            
-        }
-        //$('#load').fadeOut('slow');
-	  });
+
+			if(key != ''){
+				var ref = firebase.database().ref(useridother + '/Documents/'+fileid+'/Reciever/'+key+'');
+				ref.on("value", function(snapshot) {
+				  if(snapshot.exists()){
+				  var val = snapshot.val();
+				  console.log(val);
+				  email = val.RecepientEmail;
+				console.log('Emailset:'+email);
+				  grabbedcolor = val.RecepientColor;
+				  console.log(grabbedcolor);
+				  function hexToRgb(hex) {
+					var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+					return result ? {
+					  r: parseInt(result[1], 16),
+					  g: parseInt(result[2], 16),
+					  b: parseInt(result[3], 16)
+					} : null;
+				  }
+				
+				var rgbval = hexToRgb(grabbedcolor).r + ', ' + hexToRgb(grabbedcolor).g + ', ' + hexToRgb(grabbedcolor).b;
+				recepientrgbval = 'rgb('+rgbval+')';
+					
+					ref.once("value", function(snapshotchild) {
+						snapshotchild.forEach(function(childdata){
+							var data = childdata.val();
+							dbpeople.push({name: data.RecepientName, email: data.RecepientEmail, option:data.RecepientOption});
+							console.log(dbpeople);
+						});
+					});
+					
+					
+				}
+				//$('#load').fadeOut('slow');
+			  });
+			}
+			
 
 	  
 	  
@@ -2096,8 +2090,7 @@ try{
 		else{
 			try {
 				document.getElementById('recieverfinishbtn').style.display = 'none';
-				document.getElementById('recieverfinishlaterbtn').style.display = 'none';
-			document.getElementById('recieverdeclinebtn').style.display = 'none';
+				document.getElementById('moreoptions').style.display = 'none';
 			} catch (error) {
 				
 			}
@@ -2153,17 +2146,14 @@ try{
 
 		
 	}
-           
-		
+	}
+	else{          
+		alert('Please agree to our terms and conditions to continue');
 	}
 	
 
 });
-		
-var loginnouserbtn = document.getElementById('loginnouserbtn');
-	loginnouserbtn.addEventListener('click', function(event) {
-		window.location.hash = "#/auth/login";
-	});		
+	
 	 
 
 
@@ -2841,6 +2831,8 @@ signaturePad.clear();
 
 
 
+
+
 AddtoDocBtn.addEventListener("click", function (event) {
 	if (signaturePad.isEmpty()) {
 	  alert("Please provide a signature first.");
@@ -2907,6 +2899,21 @@ AddtoDocBtn.addEventListener("click", function (event) {
 
 
 
+var droptogglesign = 0;
+
+$(document).on('click','.actionsign', function() {  
+    $('.dropdown-menu2').css({"display": "none"});
+    if(droptogglesign === 0){
+    $(this).parent().children('#dropdown')[0].style.display = 'block';
+    droptogglesign = 1;
+    }
+    else if(droptogglesign === 1){
+		droptogglesign = 0;
+      $(this).parent().children('#dropdown')[0].style.display = 'none';
+    }
+  });
+
+
 }
 
 
@@ -2916,6 +2923,35 @@ render() {
     
     return (
 	<div>
+	<Row>
+
+<Col lg="12" className="py-3">
+<Button id="getlinkbtn" className="m-2 float-left px-4" color="primary" type="button">Save</Button>
+<div id="moreoptions" className="btn-group float-right m-2 px-4">
+<button type="button" className="btn btn-neutral actionsign outline ">Other Actions</button>
+<button type="button"  className="btn btn-neutral actionsign dropdown-toggle dropdown-toggle-split"></button>
+<div className="dropdown-menu2" id="dropdown">
+<button className="dropdown-item " id="recieverfinishlaterbtn" type="button">Finish Later</button>
+<div className="dropdown-divider"></div>
+<button className="dropdown-item " id="recieverdeclinebtn" type="button">Decline</button>
+<button className="dropdown-item "  type="button">Print & Sign</button>
+<button className="dropdown-item "  type="button">Void</button>
+<button className="dropdown-item "  type="button">Correct</button>
+<div className="dropdown-divider"></div>
+<button className="dropdown-item "  type="button">Help & Support</button>
+<button className="dropdown-item "  type="button">About Pappayasign</button>
+<button className="dropdown-item "  type="button">View History</button>
+<button className="dropdown-item "  type="button">View Certificate(PDF)</button>
+<button className="dropdown-item "  type="button">Session Information</button>
+</div>
+</div>
+<button type="button" id="recieverfinishbtn" className="btn m-2 float-right px-4 btn-primary ">Finish</button>
+<div lg="6" id="emailbtncontainer">
+<Button id="sendemailbtn" className="m-2 float-right px-4" color="primary" type="button">Next</Button>
+</div>
+
+</Col>
+</Row>
 	<Row>
 	<div id="editortoolbar" className="editortoolbar">
 	<button id="zoominbtn" color="neutral" className="tool"><i className="material-icons" >zoom_in</i></button>
@@ -2954,34 +2990,32 @@ render() {
 <div className="modal">
   <div className="modal-content">
   <div >
-  <div className="mb-4 mb-xl-0"><h5>Enter Your Details or Login to Continue: </h5></div>
+  <div className="mb-4 mb-xl-0"><h5>Please Review and Act on These Documents: </h5></div>
 	<Row>
+	<Col xs="12">
+	<div className="custom-control custom-control-alternative custom-checkbox">
+		<input
+		className="custom-control-input"
+		id="signtermscheck"
 		
-	<Col lg="6">
-	<FormGroup>
-		<Input
-			className="form-control-alternative"
-			id="nouser_name"
-			placeholder="Name"
-			type="text"
+		type="checkbox"
 		/>
-		</FormGroup>
-		</Col>
-		<Col lg="6">
-		<FormGroup>
-		<Input
-			className="form-control-alternative"
-			id="nouser_email"
-			placeholder="Email"
-			type="text"
-		/>
-		</FormGroup>
-		</Col>
-		<Col lg="6">
-		<Button id="nextnouserbtn" className="close-btn float-right px-4" > Next</Button>
-		</Col>
-		<Col lg="6">
-		<Button id="loginnouserbtn" className="cancel-btn float-left px-4" > Login</Button>
+		<label
+		className="custom-control-label"
+		htmlFor="signtermscheck"
+		>
+		<span className="text-muted">
+		I agree to use electronic records, signature and 
+		{" "}
+		<a href="#" onClick={e => e.preventDefault()}>
+		Electronic Record and Signature Discolsure
+		</a>
+		</span>
+		</label>
+	</div>
+	</Col>
+		<Col lg="12" className="justify-content-center p-2 py-3">
+		<Button id="startnouserbtn" className="close-btn px-4 " > Continue</Button>
 		</Col>
 		</Row>
 		
@@ -3173,18 +3207,7 @@ render() {
 	</Row>
 	
 	<div>	
-	<Row>
-
-	 <Col lg="12">
-	<Button id="getlinkbtn" className="m-2 float-right px-4" color="primary" type="button">Save</Button>
-	<Button id="recieverfinishbtn" color="primary" type="button" className="m-2 px-4 float-left">Finish and Approve</Button>
-	<Button id="recieverfinishlaterbtn" color="dark" type="button" className="m-2 px-4 float-left">Finish Later</Button>
-	<Button id="recieverdeclinebtn" color="neutral" type="button" className="m-2 px-4 float-left">Decline</Button>
-	<div lg="6" id="emailbtncontainer">
-	 <Button id="sendemailbtn" className="m-2 float-left px-4" color="primary" type="button">Next</Button>
-	 </div>
-	 </Col>
-	 </Row>
+	
 	 </div>
 	 </Col>
 	 <Col lg="2">

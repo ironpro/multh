@@ -148,7 +148,7 @@ class Review extends React.Component {
  
  $( "#reviewnextbtn" ).click(function() {
   modal[1].style.display = "block";
-  var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+userid+''; 
+
   var today = new Date().toLocaleString().replace(",","");
 
   var subject = document.getElementById('input-email-subject').value;
@@ -159,6 +159,7 @@ class Review extends React.Component {
   people = DataVar.RecepientArray;
   if(DataVar.SignOrder === true){
     var firstRecepientEmail = people[0].email;
+    var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+userid+'&key=0';
     var firstRecepientName = people[0].name;
     var ref = firebase.database().ref('Users/');
                 ref.orderByChild('UserEmail').equalTo(people[0].email).on("value", function(snapshotchild) {
@@ -166,6 +167,7 @@ class Review extends React.Component {
             snapshotchild.forEach(function(datarecep){
             var data = datarecep.val();
             console.log(data);
+             
             var useridData = data.UserID;
             firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentName').set(docname);
             firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentID').set(filename);
@@ -222,16 +224,18 @@ class Review extends React.Component {
 	people.forEach(function(item, index) {
 		var recepientName = people[index].name;
 		var recepientEmail = people[index].email;
-		var recepientOption = people[index].option;
+    var recepientOption = people[index].option;
+    var key = ''
 		var recepientColor = colorArray[index];
 		if(recepientOption == 'Needs to Sign' || recepientOption == 'Needs to View'){
 		console.log(recepientEmail + ',' + recepientName);
-
+    var url = 'https://pappayasign.surge.sh/#/admin/sign?id='+filename+'&type=db&u='+userid+'&key='+index+'';
 			var ref = firebase.database().ref('Users/');
               ref.orderByChild('UserEmail').equalTo(recepientEmail).on("value", function(snapshotchild) {
 				  console.log(snapshotchild);
 				  snapshotchild.forEach(function(datarecep){
-					var data = datarecep.val();
+          var data = datarecep.val();
+          key = data.key;
 					console.log(data);
 					var useridData = data.UserID;
 					firebase.database().ref('Users/'+useridData+'/Requests/'+filename).child('DocumentName').set(docname);
