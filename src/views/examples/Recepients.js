@@ -133,7 +133,20 @@ class Recepients extends React.Component {
 		return this;
 		};
 		
-		
+		$('#previous-btn').click(function(){
+			var url = "#/admin/uploadsuccess";
+			window.location.hash = url;
+		});
+
+		$('#signordercheck').change(function(){
+			var checked = $(this).is(':checked');
+			if(checked){
+				$('.recepient-order-label').show();
+			} else {
+				$('.recepient-order-label').hide();
+			}
+			
+		})
 
 		$( "#s-btn" ).click(function() {
 			var people = [];
@@ -240,9 +253,9 @@ class Recepients extends React.Component {
 			   <div >
   <div className="mb-4 mb-xl-0"><h5>Enter Recepients: </h5></div>
 	<Row>
-	{this.state.isSigningOrder && (<Col lg="1">
+	{this.state.isSigningOrder ? (<Col lg="1">
 		<FormGroup><Input type="number" className="form-control-alternative" id="recepient-input-order" placeholder="#"/></FormGroup>
-	</Col>)}
+	</Col>) : (<Input type="hidden" className="form-control-alternative" id="recepient-input-order" placeholder="#"/>)}
 	<Col lg={this.state.isSigningOrder ? '3': '4'}><FormGroup><Input className="form-control-alternative" id="recepient-input-name" placeholder="Name" type="text"/></FormGroup></Col>
 		<Col lg="4">
 		<FormGroup>
@@ -266,21 +279,20 @@ class Recepients extends React.Component {
 		
 		<Col lg="12">
 		<div id="signordercheckdiv" className="custom-control custom-checkbox float-left mx-2 my-1">
-		{/* <input
+		<input
 		className="custom-control-input"
 		id="signordercheck"
 		type="checkbox"
+		onClick={this.handleSigningOrder}
+		checked={this.state.isSigningOrder ? 'checked': ''}
 		/>
 		<label className="custom-control-label" htmlFor="signordercheck">
-		Set signing order
-		</label> */}
-            <Label check>
-              <Input type="checkbox" id="signordercheck" onClick={this.handleSigningOrder} />{' '}
-			  Set signing order
-            </Label>
+			Set signing order
+		</label>
  		</div>
 		<Button id="s-btn" className="close-btn float-right m-2 px-5" > Next</Button>
 		<Button id="append-btn" className="close-btn float-right m-2 px-5" > Add</Button>
+		<Button id="previous-btn" className="close-btn float-right m-2 px-5" > Previos</Button>
 		
 		</Col>
 		</Row>
