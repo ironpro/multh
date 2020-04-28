@@ -115,8 +115,8 @@ class Recepients extends React.Component {
 			else{
 				var checked = $('#signordercheck').is(':checked');
 				var li = document.createElement('li');
-				var recepientOrderLabel = !checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label">1</span>';
-				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr" id="recepient-order" placeholder="'+recepientOrder+'" type="hidden" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
+				var recepientOrderLabel = ''; //!checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label">1</span>';
+				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr recepient-order-label" id="recepient-order" placeholder="'+recepientOrder+'" type="text" style="width:5%"/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" style="width:24%" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
 				$( "#sortable" ).append(li);
 				document.getElementById('recepient-input-order').value = '';
 				document.getElementById('recepient-input-name').value = '';
