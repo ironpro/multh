@@ -35,7 +35,9 @@ import {
   Button,
 	Nav,
   UncontrolledTooltip,
-  CardBody
+  CardBody,
+  Checkbox,
+  Label
 } from "reactstrap";
 // core components
 import HeaderDefault from "components/Headers/HeaderDefault.js";
@@ -48,6 +50,16 @@ var firebase = require('firebase');
 
 class Recepients extends React.Component {
   
+	constructor(props) {
+		super(props);
+		this.state = {
+			isSigningOrder: false
+		}
+	}
+
+	handleSigningOrder = () => {
+		this.setState({isSigningOrder: !this.state.isSigningOrder});
+	}
     
     componentDidMount(){
 		var wurl = '';
@@ -89,6 +101,7 @@ class Recepients extends React.Component {
 		  } );
 
 		$( "#append-btn" ).click(function() {
+			var recepientOrder = document.getElementById('recepient-input-order').value;
 			var recepientName = document.getElementById('recepient-input-name').value;
 			var recepientEmail = document.getElementById('recepient-input-email').value;
 			var recepientoptionselect = document.getElementById('recepientoptionselect');
@@ -98,8 +111,10 @@ class Recepients extends React.Component {
 			}
 			else{
 				var li = document.createElement('li');
-				li.innerHTML='<div class="p-2 rcard" id="rcard"><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
+				var recepientOrderLabel = document.getElementById('signordercheck').checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label"></span>';
+				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr" id="recepient-order" placeholder="'+recepientOrder+'" type="hidden" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
 				$( "#sortable" ).append(li);
+				document.getElementById('recepient-input-order').value = '';
 				document.getElementById('recepient-input-name').value = '';
 				document.getElementById('recepient-input-email').value = '';
 			}
@@ -224,7 +239,11 @@ class Recepients extends React.Component {
                <CardBody>
 			   <div >
   <div className="mb-4 mb-xl-0"><h5>Enter Recepients: </h5></div>
-	<Row><Col lg="4"><FormGroup><Input className="form-control-alternative" id="recepient-input-name" placeholder="Name" type="text"/></FormGroup></Col>
+	<Row>
+	{this.state.isSigningOrder && (<Col lg="1">
+		<FormGroup><Input type="number" className="form-control-alternative" id="recepient-input-order" placeholder="#"/></FormGroup>
+	</Col>)}
+	<Col lg={this.state.isSigningOrder ? '3': '4'}><FormGroup><Input className="form-control-alternative" id="recepient-input-name" placeholder="Name" type="text"/></FormGroup></Col>
 		<Col lg="4">
 		<FormGroup>
 		<Input
@@ -247,15 +266,19 @@ class Recepients extends React.Component {
 		
 		<Col lg="12">
 		<div id="signordercheckdiv" className="custom-control custom-checkbox float-left mx-2 my-1">
-		<input
+		{/* <input
 		className="custom-control-input"
 		id="signordercheck"
 		type="checkbox"
 		/>
 		<label className="custom-control-label" htmlFor="signordercheck">
 		Set signing order
-		</label>
-		</div>
+		</label> */}
+            <Label check>
+              <Input type="checkbox" id="signordercheck" onClick={this.handleSigningOrder} />{' '}
+			  Set signing order
+            </Label>
+ 		</div>
 		<Button id="s-btn" className="close-btn float-right m-2 px-5" > Next</Button>
 		<Button id="append-btn" className="close-btn float-right m-2 px-5" > Add</Button>
 		
