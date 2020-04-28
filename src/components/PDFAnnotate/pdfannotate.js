@@ -2206,6 +2206,12 @@ sendemail.addEventListener('click', function(event) {
 	window.location.hash = '#/admin/review?id='+filename+'';
 });
 
+var previousbtn = document.getElementById('previousbtn');
+previousbtn.addEventListener('click', function(event) { 
+	window.location.hash = "#/admin/recepients";
+	//window.location.hash = "#/admin/uploadsuccess";
+});
+
 
 var addinitialmodalbtn = document.getElementById('addinitialmodalbtn');
 addinitialmodalbtn.addEventListener('click', function(event) {
@@ -2947,6 +2953,7 @@ render() {
 </div>
 <button type="button" id="recieverfinishbtn" className="btn m-2 float-right px-4 btn-primary ">Finish</button>
 <div lg="6" id="emailbtncontainer">
+<Button id="previousbtn" className="m-2 float-right px-4" color="primary" type="button">Previous</Button>
 <Button id="sendemailbtn" className="m-2 float-right px-4" color="primary" type="button">Next</Button>
 </div>
 
