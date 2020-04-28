@@ -106,19 +106,31 @@ class Recepients extends React.Component {
 			var recepientEmail = document.getElementById('recepient-input-email').value;
 			var recepientoptionselect = document.getElementById('recepientoptionselect');
 			var recepientoption = recepientoptionselect.options[recepientoptionselect.selectedIndex].value;
+			if(recepientOrder == '') {
+				recepientOrder = '1';
+			}
 			if(recepientName == '' || recepientEmail ==''){
 				alert('Please enter all details.');
 			}
 			else{
+				var checked = $('#signordercheck').is(':checked');
 				var li = document.createElement('li');
-				var recepientOrderLabel = document.getElementById('signordercheck').checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label"></span>';
-				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr" id="recepient-order" placeholder="'+recepientOrder+'" type="hidden" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
+				var recepientOrderLabel = ''; //!checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label">1</span>';
+				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr recepient-order-label" id="recepient-order" placeholder="'+recepientOrder+'" type="text" style="width:5%"/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" style="width:24%" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
 				$( "#sortable" ).append(li);
 				document.getElementById('recepient-input-order').value = '';
 				document.getElementById('recepient-input-name').value = '';
 				document.getElementById('recepient-input-email').value = '';
+				if(checked){
+					$('.recepient-order-label').show();
+				} else {
+					$('.recepient-order-label').hide();
+				}
 			}
-			
+			var listItems = $("#sortable li");
+			if(listItems.length >=2 ){
+				$('#signordercheck').removeAttr('disabled');
+			}
 		});
 
 		$(document).on('click','.delete', function() {
@@ -126,6 +138,7 @@ class Recepients extends React.Component {
 			console.log($(this).parent().children('#recepient-name').attr("placeholder"));  
 		});
 
+		$('#signordercheck').attr('disabled', 'disabled');
 		
 		Array.prototype.pushWithReplace = function(o,k){
 		var fi = this.findIndex(f => f[k] === o[k]);
@@ -133,7 +146,20 @@ class Recepients extends React.Component {
 		return this;
 		};
 		
-		
+		$('#previous-btn').click(function(){
+			var url = "#/admin/uploadsuccess";
+			window.location.hash = url;
+		});
+
+		$('#signordercheck').change(function(){
+			var checked = $(this).is(':checked');
+			if(checked){
+				$('.recepient-order-label').show();
+			} else {
+				$('.recepient-order-label').hide();
+			}
+			
+		})
 
 		$( "#s-btn" ).click(function() {
 			var people = [];
@@ -240,9 +266,9 @@ class Recepients extends React.Component {
 			   <div >
   <div className="mb-4 mb-xl-0"><h5>Enter Recepients: </h5></div>
 	<Row>
-	{this.state.isSigningOrder && (<Col lg="1">
+	{this.state.isSigningOrder ? (<Col lg="1">
 		<FormGroup><Input type="number" className="form-control-alternative" id="recepient-input-order" placeholder="#"/></FormGroup>
-	</Col>)}
+	</Col>) : (<Input type="hidden" className="form-control-alternative" id="recepient-input-order" placeholder="#"/>)}
 	<Col lg={this.state.isSigningOrder ? '3': '4'}><FormGroup><Input className="form-control-alternative" id="recepient-input-name" placeholder="Name" type="text"/></FormGroup></Col>
 		<Col lg="4">
 		<FormGroup>
@@ -266,21 +292,20 @@ class Recepients extends React.Component {
 		
 		<Col lg="12">
 		<div id="signordercheckdiv" className="custom-control custom-checkbox float-left mx-2 my-1">
-		{/* <input
+		<input
 		className="custom-control-input"
 		id="signordercheck"
 		type="checkbox"
+		onClick={this.handleSigningOrder}
+		checked={this.state.isSigningOrder ? 'checked': ''}
 		/>
 		<label className="custom-control-label" htmlFor="signordercheck">
-		Set signing order
-		</label> */}
-            <Label check>
-              <Input type="checkbox" id="signordercheck" onClick={this.handleSigningOrder} />{' '}
-			  Set signing order
-            </Label>
+			Set signing order
+		</label>
  		</div>
 		<Button id="s-btn" className="close-btn float-right m-2 px-5" > Next</Button>
 		<Button id="append-btn" className="close-btn float-right m-2 px-5" > Add</Button>
+		<Button id="previous-btn" className="close-btn float-right m-2 px-5" > Previos</Button>
 		
 		</Col>
 		</Row>
