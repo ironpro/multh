@@ -127,7 +127,10 @@ class Recepients extends React.Component {
 					$('.recepient-order-label').hide();
 				}
 			}
-			
+			var listItems = $("#sortable li");
+			if(listItems.length >=2 ){
+				$('#signordercheck').removeAttr('disabled');
+			}
 		});
 
 		$(document).on('click','.delete', function() {
@@ -135,6 +138,7 @@ class Recepients extends React.Component {
 			console.log($(this).parent().children('#recepient-name').attr("placeholder"));  
 		});
 
+		$('#signordercheck').attr('disabled', 'disabled');
 		
 		Array.prototype.pushWithReplace = function(o,k){
 		var fi = this.findIndex(f => f[k] === o[k]);
