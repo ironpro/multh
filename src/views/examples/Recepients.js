@@ -106,17 +106,26 @@ class Recepients extends React.Component {
 			var recepientEmail = document.getElementById('recepient-input-email').value;
 			var recepientoptionselect = document.getElementById('recepientoptionselect');
 			var recepientoption = recepientoptionselect.options[recepientoptionselect.selectedIndex].value;
+			if(recepientOrder == '') {
+				recepientOrder = '1';
+			}
 			if(recepientName == '' || recepientEmail ==''){
 				alert('Please enter all details.');
 			}
 			else{
+				var checked = $('#signordercheck').is(':checked');
 				var li = document.createElement('li');
-				var recepientOrderLabel = document.getElementById('signordercheck').checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label"></span>';
+				var recepientOrderLabel = !checked ? '<span style="position: relative;margin: 1px;" class="recepient-order-label">'+recepientOrder+'</span>' : '<span style="position: relative;margin: 1px;" class="recepient-order-label">1</span>';
 				li.innerHTML='<div class="p-2 rcard" id="rcard">'+recepientOrderLabel+'<input class="form-control-alternative p-3 inputr" id="recepient-order" placeholder="'+recepientOrder+'" type="hidden" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-name" placeholder="'+recepientName+'" type="text" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-email" placeholder="'+recepientEmail+'" type="email" disabled/><input class="form-control-alternative p-3 inputr" id="recepient-option" placeholder="'+recepientoption+'" type="text" disabled/><button class="buttonr delete">x</button></div>';
 				$( "#sortable" ).append(li);
 				document.getElementById('recepient-input-order').value = '';
 				document.getElementById('recepient-input-name').value = '';
 				document.getElementById('recepient-input-email').value = '';
+				if(checked){
+					$('.recepient-order-label').show();
+				} else {
+					$('.recepient-order-label').hide();
+				}
 			}
 			
 		});
